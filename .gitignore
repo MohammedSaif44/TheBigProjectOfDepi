@@ -1,0 +1,41 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+
+# Rider IDE
+.idea/
+
+# Logs
+*.log
+
+# User-specific files
+*.userosscache
+*.sln.docstates
+
+# Temporary files
+~$*
+*.tmp
+
+# Auto-generated files
+Generated\ Files/
+
+# Publish output
+*.publishsettings
+appsettings.Development.json
+
+# Entity Framework migrations backup
+Migrations/
+
+# System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Other
+*.dbmdl
+*.jfm
