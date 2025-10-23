@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35806.99
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car.Api", "Car.Api\Car.Api\Car.Api.csproj", "{8BCE9B5C-B753-9FDE-E69A-9C01D32F3709}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Api", "Car.Api\Car.Api\CarRental.Api.csproj", "{8BCE9B5C-B753-9FDE-E69A-9C01D32F3709}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car.App", "Car.App\Car.App.csproj", "{18C0BBBB-A016-F0E2-BDEA-BE1FAA350ABD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.App", "Car.App\CarRental.App.csproj", "{18C0BBBB-A016-F0E2-BDEA-BE1FAA350ABD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car.Core", "Car.Core\Car.Core.csproj", "{ADB2B83A-1203-77D9-AA37-FF1C60E694B7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Core", "Car.Core\CarRental.Core.csproj", "{ADB2B83A-1203-77D9-AA37-FF1C60E694B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car.Infa", "Car.Infa\Car.Infa.csproj", "{182FEAD7-A01E-C3EF-1BAE-DF2B6F6F0BE1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarRental.Infa", "Car.Infa\CarRental.Infa.csproj", "{182FEAD7-A01E-C3EF-1BAE-DF2B6F6F0BE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

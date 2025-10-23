@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.21">
@@ -17,8 +19,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Car.App\Car.App.csproj" />
-    <ProjectReference Include="..\..\Car.Infa\Car.Infa.csproj" />
+    <ProjectReference Include="..\..\Car.App\CarRental.App.csproj" />
+    <ProjectReference Include="..\..\Car.Core\CarRental.Core.csproj" />
+    <ProjectReference Include="..\..\Car.Infa\CarRental.Infa.csproj" />
   </ItemGroup>
 
   <ItemGroup>
