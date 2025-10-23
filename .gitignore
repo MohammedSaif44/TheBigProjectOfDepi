@@ -1,41 +1,100 @@
+# ============================
+# Visual Studio & .NET general
+# ============================
+
 # Build results
-bin/
-obj/
-
-# Visual Studio files
-.vs/
-*.user
-*.suo
-
-# Rider IDE
-.idea/
-
-# Logs
-*.log
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
 
 # User-specific files
+*.user
+*.suo
 *.userosscache
 *.sln.docstates
+.vscode/
+.vs/
+.idea/
 
-# Temporary files
-~$*
-*.tmp
+# ============================
+# NuGet
+# ============================
+*.nupkg
+*.snupkg
+*.nuspec
+project.lock.json
+project.fragment.lock.json
+artifacts/
 
-# Auto-generated files
-Generated\ Files/
+# ============================
+# Entity Framework
+# ============================
+
+# نحتفظ بالمجلد الرئيسي للمـيـجريـشـنـز لأن الفريق يستخدم نفس قاعدة البيانات
+# لكن نتجاهل أي ملفات نسخ أو نسخ احتياطية
+[Mm]igrations/[Bb]ackup/
+[Mm]igrations/*_temp/
+
+# ============================
+# Configuration Files
+# ============================
+
+# كل مطور عنده نسخة محلية من إعدادات التطوير
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# ============================
+# Others
+# ============================
+
+# Logs and temp files
+*.log
+*.tlog
+*.vspscc
+*.vssscc
+*.cache
+*.pdb
 
 # Publish output
-*.publishsettings
-appsettings.Development.json
+publish/
+wwwroot/lib/
 
-# Entity Framework migrations backup
-Migrations/
+# Coverage & Test Results
+TestResults/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
 
-# System files
+# Backup & temporary files
+*~
+*.bak
+*.tmp
+*.temp
+*.swp
+
+# ============================
+# OS-specific files
+# ============================
+
+# Windows
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+$RECYCLE.BIN/
 
-# Other
-*.dbmdl
-*.jfm
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# ============================
+# JetBrains Rider
+# ============================
+.idea/
+*.sln.iml
