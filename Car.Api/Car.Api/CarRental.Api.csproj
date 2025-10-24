@@ -24,8 +24,4 @@
     <ProjectReference Include="..\..\Car.Infa\CarRental.Infa.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
