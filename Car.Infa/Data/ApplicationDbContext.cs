@@ -1,4 +1,5 @@
 ﻿using CarRental.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -46,6 +47,47 @@ namespace CarRental.Infa.Data
                 .WithOne(r => r.Payment)
                 .HasForeignKey<Payment>(p => p.ReservationId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+
+
+            // ===================== SEED ROLES & ADMIN =====================
+            var adminRoleId = Guid.NewGuid().ToString();
+            var customerRoleId = Guid.NewGuid().ToString();
+            var adminUserId = Guid.NewGuid().ToString();
+
+            // Roles
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = adminRoleId, Name = "Admin", NormalizedName = "ADMIN" },
+                new IdentityRole { Id = customerRoleId, Name = "Customer", NormalizedName = "CUSTOMER" }
+            );
+
+            // Admin user
+            var hasher = new PasswordHasher<ApplicationUser>();
+            var adminUser = new ApplicationUser
+            {
+                Id = adminUserId,
+                UserName = "admin@car.com",
+                NormalizedUserName = "ADMIN@CAR.COM",
+                Email = "admin@car.com",
+                NormalizedEmail = "ADMIN@CAR.COM",
+                FullName = "System Admin",
+                EmailConfirmed = true,
+                CreatedAt = DateTime.UtcNow,
+                PasswordHash = hasher.HashPassword(null, "Admin@123")
+            };
+
+            modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
+
+            // Link admin user to Admin role
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(
+                new IdentityUserRole<string>
+                {
+                    RoleId = adminRoleId,
+                    UserId = adminUserId
+                }
+            );
         }
+
+
     }
 }
