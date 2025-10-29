@@ -1,5 +1,8 @@
+using CarRental.App.Interfaces;
+using CarRental.App.Services;
 using CarRental.Core.Entities;
 using CarRental.Infa.Data;
+using CarRental.Infa.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +82,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
+builder.Services.AddScoped<IAuthRepoository, AuthRepository>();
+builder.Services.AddScoped<AuthService>();
 
 var app = builder.Build();
 
