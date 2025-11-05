@@ -34,6 +34,7 @@ namespace CarRental.Api.Controllers
             await _carService.AddAsync(car);
             return Ok("Car Created Successfully");
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] UpdateCarDto dto)
         {
@@ -43,6 +44,7 @@ namespace CarRental.Api.Controllers
             return Ok("Car Updated Successfully");
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
