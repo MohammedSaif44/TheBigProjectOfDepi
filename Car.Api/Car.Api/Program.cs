@@ -85,6 +85,10 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IAuthRepoository, AuthRepository>();
 builder.Services.AddScoped<AuthService>();
 
+builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddScoped<CarService>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
