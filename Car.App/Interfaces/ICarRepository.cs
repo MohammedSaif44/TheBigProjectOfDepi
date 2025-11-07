@@ -1,4 +1,5 @@
 ﻿using CarRental.App.DTOs;
+using CarRental.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,12 @@ namespace CarRental.App.Interfaces
 {
     public interface ICarRepository
     {
-        Task<IEnumerable<CarDto>> GetAllAsync();
-        Task<CarDto> GetByIdAsync(int id);
-        Task AddAsync(CarDto car);
-        Task<bool> UpdateAsync(int id, UpdateCarDto dto);
+        Task<IEnumerable<Car>> GetAllAsync();
+        Task<Car?> GetByIdAsync(int id);
+        Task AddAsync(Car car);
+        Task<bool> UpdateAsync(Car car);
         Task<bool> DeleteAsync(int id);
-        Task<IEnumerable<CarDto>> GetByFiltersAsync(FilterDto filter);
+        Task<IEnumerable<Car>> GetByFiltersAsync(string? make, string? model, int? year, decimal? minPrice, decimal? maxPrice, string? status);
 
 
 

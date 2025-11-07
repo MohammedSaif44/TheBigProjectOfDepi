@@ -17,55 +17,76 @@ namespace CarRental.Api.Controllers
             _carService = carService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await _carService.GetAllAsync());
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var cars = await _carService.GetAllAsync();
+            return Ok(cars);
+        }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
         {
             var car = await _carService.GetByIdAsync(id);
-            return car == null ? NotFound("Car Not Found") : Ok(car);
+            if (car == null)
+                return NotFound(new { Message = $"Car with ID {id} not found." });
+
+            return Ok(car);
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CarDto car)
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromBody] CreateCarDto dto)
         {
-            await _carService.AddAsync(car);
-            return Ok("Car Created Successfully");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            await _carService.AddAsync(dto);
+            return Ok(new { Message = "Car added successfully." });
         }
+
         [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateCarDto dto)
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromBody] UpdateCarDto dto)
         {
-            var result = await _carService.UpdateAsync(id, dto);
-            if (!result) return NotFound($"Car with ID {id} not found");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            return Ok("Car Updated Successfully");
+            var result = await _carService.UpdateAsync(dto);
+            if (!result)
+                return NotFound(new { Message = $"Car with ID {dto.Id} not found." });
+
+            return Ok(new { Message = "Car updated successfully." });
         }
 
+
         [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
+        [HttpDelete("delete/{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _carService.DeleteAsync(id);
-            return deleted ? Ok("Deleted Successfully") : NotFound("Car Not Found");
+            try
+            {
+                var result = await _carService.DeleteAsync(id);
+                if (!result)
+                    return NotFound(new { Message = $"Car with ID {id} not found." });
+
+                return Ok(new { Message = "Car deleted successfully." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
         }
+
 
 
 
         [HttpPost("filter")]
-        public async Task<IActionResult> FilterCars([FromBody] FilterDto filter)
+        public async Task<IActionResult> Filter([FromBody] FilterDto filter)
         {
-            var result = await _carService.GetByFiltersAsync(filter);
-            return Ok(result);
+            var cars = await _carService.GetByFiltersAsync(filter);
+            return Ok(cars);
         }
-
-
-
-
-
-
 
 
 

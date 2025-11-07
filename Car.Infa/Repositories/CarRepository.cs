@@ -20,67 +20,49 @@ namespace CarRental.Infa.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<CarDto>> GetAllAsync()
+        public async Task<IEnumerable<Car>> GetAllAsync()
         {
-            return await _context.Cars
-                .Select(c => new CarDto
-                {
-                    Id = c.Id,
-                    Make = c.Make,
-                    Model = c.Model,
-                    Year = c.Year,
-                    PricePerDay = c.PricePerDay,
-                    Status = c.Status
-                }).ToListAsync();
+            return await _context.Cars.ToListAsync();
         }
-        public async Task<CarDto> GetByIdAsync(int id)
-        {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null) return null;
 
-            return new CarDto
-            {
-                Id = car.Id,
-                Make = car.Make,
-                Model = car.Model,
-                Year = car.Year,
-                PricePerDay = car.PricePerDay,
-                Status = car.Status
-            };
+        public async Task<Car?> GetByIdAsync(int id)
+        {
+            return await _context.Cars.FindAsync(id);
         }
-        public async Task AddAsync(CarDto carDto)
-        {
-            var car = new Car
-            {
-                Make = carDto.Make,
-                Model = carDto.Model,
-                Year = carDto.Year,
-                PricePerDay = carDto.PricePerDay,
-                Status = carDto.Status
-            };
 
+        public async Task AddAsync(Car car)
+        {
             await _context.Cars.AddAsync(car);
             await _context.SaveChangesAsync();
         }
-        public async Task<bool> UpdateAsync(int id, UpdateCarDto dto)
+
+        public async Task<bool> UpdateAsync(Car car)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null) return false;
+            var existing = await _context.Cars.FindAsync(car.Id);
+            if (existing == null) return false;
+            
+            existing.Make = car.Make;
+            existing.Model = car.Model;
+            existing.Year = car.Year;
+            existing.PricePerDay = car.PricePerDay;
+            existing.Status = car.Status;
 
-            car.Make = dto.Make;
-            car.Model = dto.Model;
-            car.Year = dto.Year;
-            car.PricePerDay = dto.PricePerDay;
-            car.Status = dto.Status;
-
+            _context.Cars.Update(existing);
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var car = await _context.Cars.FindAsync(id);
-            if (car == null) return false;
+            var car = await _context.Cars
+                .Include(c => c.Reservations)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (car == null)
+                return false;
+
+            if (car.Reservations != null && car.Reservations.Any())
+                throw new InvalidOperationException("Cannot delete car with existing reservations.");
 
             _context.Cars.Remove(car);
             await _context.SaveChangesAsync();
@@ -88,72 +70,32 @@ namespace CarRental.Infa.Repositories
         }
 
 
-
-
-
-
-        public async Task<IEnumerable<CarDto>> GetByFiltersAsync(FilterDto filter)
+        public async Task<IEnumerable<Car>> GetByFiltersAsync(string? make, string? model, int? year, decimal? minPrice, decimal? maxPrice, string? status)
         {
             var query = _context.Cars.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filter.Make))
-                query = query.Where(c => c.Make.Contains(filter.Make));
+            if (!string.IsNullOrEmpty(make))
+                query = query.Where(c => c.Make.Contains(make));
 
-            if (!string.IsNullOrWhiteSpace(filter.Model))
-                query = query.Where(c => c.Model.Contains(filter.Model));
+            if (!string.IsNullOrEmpty(model))
+                query = query.Where(c => c.Model.Contains(model));
 
-            if (filter.Year.HasValue)
-                query = query.Where(c => c.Year == filter.Year);
+            if (minPrice.HasValue)
+                query = query.Where(c => c.PricePerDay >= minPrice.Value);
 
+            if (maxPrice.HasValue)
+                query = query.Where(c => c.PricePerDay <= maxPrice.Value);
 
+            if (!string.IsNullOrEmpty(status))
+                query = query.Where(c => c.Status == status);
 
-            return await query
-                .Select(c => new CarDto
-                {
-                    Id = c.Id,
-                    Make = c.Make,
-                    Model = c.Model,
-                    Year = c.Year,
-                    Status = c.Status,
+            if (year.HasValue)
+                query = query.Where(c => c.Year == year.Value);
 
-                })
-                .ToListAsync();
+            return await query.ToListAsync();
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
     }
 }

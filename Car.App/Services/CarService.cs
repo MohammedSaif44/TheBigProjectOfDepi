@@ -1,5 +1,6 @@
 ﻿using CarRental.App.DTOs;
 using CarRental.App.Interfaces;
+using CarRental.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,30 +11,98 @@ namespace CarRental.App.Services
 {
     public class CarService
     {
-        private readonly ICarRepository _repo;
+        private readonly ICarRepository _repository;
 
-        public CarService(ICarRepository repo)
+        public CarService(ICarRepository repository)
         {
-            _repo = repo;
+            _repository = repository;
         }
 
-        public Task<IEnumerable<CarDto>> GetAllAsync() => _repo.GetAllAsync();
-        public Task<CarDto> GetByIdAsync(int id)
+        public async Task<IEnumerable<CarDto>> GetAllAsync()
         {
-            return _repo.GetByIdAsync(id);
+            var cars = await _repository.GetAllAsync();
+            return cars.Select(c => new CarDto
+            {
+                Id = c.Id,
+                Make = c.Make,
+                Model = c.Model,
+                Year = c.Year,
+                PricePerDay = c.PricePerDay,
+                Status = c.Status
+            }).ToList();
         }
-        public Task AddAsync(CarDto car) => _repo.AddAsync(car);
 
-        public Task<bool> UpdateAsync(int id, UpdateCarDto dto)
+        public async Task<CarDto?> GetByIdAsync(int id)
         {
-            return _repo.UpdateAsync(id, dto);
+            var car = await _repository.GetByIdAsync(id);
+            if (car == null) return null;
+
+            return new CarDto
+            {
+                Id = car.Id,
+                Make = car.Make,
+                Model = car.Model,
+                Year = car.Year,
+                PricePerDay = car.PricePerDay,
+                Status = car.Status
+            };
         }
-        public Task<bool> DeleteAsync(int id) => _repo.DeleteAsync(id);
 
+        public async Task AddAsync(CreateCarDto dto)
+        {
+            var car = new Car
+            {
+                Make = dto.Make,
+                Model = dto.Model,
+                Year = dto.Year,
+                PricePerDay = dto.PricePerDay,
+                Status = "Available"
+            };
 
-        public Task<IEnumerable<CarDto>> GetByFiltersAsync(FilterDto filter)
-                                        => _repo.GetByFiltersAsync(filter);
+            await _repository.AddAsync(car);
+        }
 
+        public async Task<bool> UpdateAsync(UpdateCarDto dto)
+        {
+            var car = new Car
+            {
+                Id = dto.Id,
+                Make = dto.Make ?? "",
+                Model = dto.Model ?? "",
+                Year = dto.Year,
+                PricePerDay = dto.PricePerDay,
+                Status = dto.Status ?? "Available"
+            };
+
+            return await _repository.UpdateAsync(car);
+        }
+
+        public async Task<bool> DeleteAsync(int id)
+        {
+            return await _repository.DeleteAsync(id);
+        }
+
+        public async Task<IEnumerable<CarDto>> GetByFiltersAsync(FilterDto filter)
+        {
+            var cars = await _repository.GetByFiltersAsync(
+                filter.Make,
+                filter.Model,
+                 filter.Year,
+                filter.MinPrice,
+                filter.MaxPrice,
+                filter.Status
+            );
+
+            return cars.Select(c => new CarDto
+            {
+                Id = c.Id,
+                Make = c.Make,
+                Model = c.Model,
+                Year = c.Year,
+                PricePerDay = c.PricePerDay,
+                Status = c.Status
+            }).ToList();
+        }
 
 
 
