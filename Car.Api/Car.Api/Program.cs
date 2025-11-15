@@ -100,6 +100,10 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 builder.Services.AddScoped<CarService>();
 
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<ReservationService>();
+
+
 
 var app = builder.Build();
 
