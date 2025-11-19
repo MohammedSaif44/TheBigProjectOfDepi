@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CarRental.Api.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ApiController]
     [Route("api/[controller]")]
     public class ReservationController : ControllerBase
@@ -26,8 +28,13 @@ namespace CarRental.Api.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> Create(CreateReservationDto dto)
         {
-            var user = await _userManager.GetUserAsync(User);
-            await _service.AddAsync(user.Id, dto);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+                return Unauthorized("User ID not found in token.");
+
+            await _service.AddAsync(userId, dto);
+
             return Ok(new { Message = "Reservation created successfully." });
         }
 
