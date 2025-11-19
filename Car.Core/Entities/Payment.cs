@@ -14,6 +14,7 @@ namespace CarRental.Core.Entities
         public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
         public string Status { get; set; } = "Pending";
         public string? Method { get; set; }
+        public string? SessionId { get; set; }
 
         public Reservation? Reservation { get; set; }
     }
