@@ -1,6 +1,7 @@
 ﻿using CarRental.App.DTOs;
 using CarRental.App.Interfaces;
 using CarRental.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +14,15 @@ namespace CarRental.App.Services
     {
         private readonly IReservationRepository _reservationRepo;
         private readonly ICarRepository _carRepo;
+        private readonly INotificationService _notificationService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ReservationService(IReservationRepository reservationRepo, ICarRepository carRepo)
+        public ReservationService(IReservationRepository reservationRepo, ICarRepository carRepo, INotificationService notificationService, UserManager<ApplicationUser> userManager)
         {
             _reservationRepo = reservationRepo;
             _carRepo = carRepo;
+            _notificationService = notificationService;
+            _userManager = userManager;
         }
 
        
@@ -44,9 +49,26 @@ namespace CarRental.App.Services
             };
 
             await _reservationRepo.AddAsync(reservation);
+
+            var user = await _userManager.FindByIdAsync(reservation.UserId);
+
+            await _notificationService.NotifyAsync(
+                reservation.UserId,
+                user?.Email ?? "",
+                NotificationType.ReservationCreated,
+                "Reservation Created",
+                $"Your reservation #{reservation.Id} has been created.",
+                new Dictionary<string, string>
+                {
+            { "ReservationId", reservation.Id.ToString() },
+            { "Status", reservation.Status }
+                }
+            );
+
+
         }
 
-        
+
         public async Task<IEnumerable<ReservationDto>> GetByUserAsync(string userId)
         {
             var list = await _reservationRepo.GetByUserIdAsync(userId);
@@ -97,10 +119,27 @@ namespace CarRental.App.Services
             reservation.Status = dto.Status;
             reservation.TotalPrice = reservation.Car.PricePerDay * days;
 
-            return await _reservationRepo.UpdateAsync(reservation);
+             await _reservationRepo.UpdateAsync(reservation);
+
+            var user = await _userManager.FindByIdAsync(reservation.UserId);
+
+            await _notificationService.NotifyAsync(
+                reservation.UserId,
+                user?.Email ?? "",
+                NotificationType.ReservationUpdated,
+                "Reservation Updated",
+                $"Your reservation #{reservation.Id} has been updated.",
+                new Dictionary<string, string>
+                {
+            { "ReservationId", reservation.Id.ToString() },
+            { "Status", reservation.Status }
+                }
+            );
+
+            return true;
         }
 
-       
+
         public async Task<bool> DeleteAsync(int id, string userId)
         {
             var res = await _reservationRepo.GetByIdAsync(id);
@@ -109,8 +148,25 @@ namespace CarRental.App.Services
             if (res.UserId != userId)
                 throw new Exception("Not allowed.");
 
-            return await _reservationRepo.DeleteAsync(id);
+            await _reservationRepo.DeleteAsync(id);
+            var user = await _userManager.FindByIdAsync(userId);
+
+            await _notificationService.NotifyAsync(
+                userId,
+                user?.Email ?? "",
+                NotificationType.ReservationCancelled,
+                "Reservation Cancelled",
+                $"Your reservation #{res.Id} has been cancelled.",
+                new Dictionary<string, string>
+                {
+            { "ReservationId", res.Id.ToString() }
+                }
+            );
+
+            return true;
         }
+       
+
     }
 
 }
