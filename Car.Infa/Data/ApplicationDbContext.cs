@@ -18,6 +18,10 @@ namespace CarRental.Infa.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationPreference> NotificationPreferences { get; set; }
+        public DbSet<EmailTemplate> EmailTemplates { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

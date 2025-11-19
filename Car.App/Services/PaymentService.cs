@@ -1,6 +1,7 @@
 ﻿using CarRental.App.DTOs;
 using CarRental.App.Interfaces;
 using CarRental.Core.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Stripe;
 using Stripe.Checkout;
@@ -18,14 +19,18 @@ namespace CarRental.App.Services
         private readonly IPaymentRepository _paymentRepo;
         private readonly IReservationRepository _reservationRepo;
         private readonly IConfiguration _config;
+        private readonly INotificationService _notificationService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PaymentService(IPaymentRepository paymentRepo, IReservationRepository reservationRepo, IConfiguration config)
+        public PaymentService(IPaymentRepository paymentRepo, IReservationRepository reservationRepo, IConfiguration config, INotificationService notificationService, UserManager<ApplicationUser> userManager)
         {
             _paymentRepo = paymentRepo;
             _reservationRepo = reservationRepo;
             _config = config;
+            _userManager = userManager;
 
             StripeConfiguration.ApiKey = _config["Stripe:SecretKey"];
+            _notificationService = notificationService;
         }
 
         public async Task<PaymentResultDto> CreateCheckoutSessionAsync(CreatePaymentDto dto, string userEmail)
@@ -114,6 +119,20 @@ namespace CarRental.App.Services
                 reservation.Status = "Confirmed";
                 await _reservationRepo.UpdateAsync(reservation);
             }
+            var user = await _userManager.FindByIdAsync(reservation.UserId);
+            await _notificationService.NotifyAsync(
+                user.Id,
+                user.Email!,
+                NotificationType.PaymentSuccess,
+                "Payment Successful",
+                $"Your payment for Reservation #{reservation.Id} was successful.",
+                new Dictionary<string, string>
+                {
+                    { "ReservationId", reservation.Id.ToString() },
+                    { "Amount", payment.Amount.ToString("0.00") }
+                }
+            );
+
         }
 
         public async Task<IEnumerable<PaymentDto>> GetAllAsync()
