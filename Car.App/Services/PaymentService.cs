@@ -49,8 +49,8 @@ namespace CarRental.App.Services
             {
                 Mode = "payment",
                 CustomerEmail = userEmail,
-                SuccessUrl = dto.SuccessUrl ?? "https://localhost:44385/api/payment/success",
-                CancelUrl = dto.CancelUrl ?? "https://localhost:44385/api/payment/cancel",
+                SuccessUrl = dto.SuccessUrl ?? "http://localhost:5500/payment-success.html",
+                CancelUrl = dto.CancelUrl ?? "http://localhost:5500/payment-failed.html",
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>
             {

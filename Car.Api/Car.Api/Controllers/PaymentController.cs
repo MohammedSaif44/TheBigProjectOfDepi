@@ -40,7 +40,7 @@ namespace CarRental.Api.Controllers
             var list = await _paymentService.GetAllAsync();
             return Ok(list);
         }
-
+        [AllowAnonymous]
         [HttpPost("webhook")]
         public async Task<IActionResult> Webhook()
         {
