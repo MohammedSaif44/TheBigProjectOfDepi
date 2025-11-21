@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace CarRental.Api.Controllers
 {
-    [Authorize(Roles = "Customer")]
+    
     [ApiController]
     [Route("api/[controller]")]
     public class ReservationController : ControllerBase

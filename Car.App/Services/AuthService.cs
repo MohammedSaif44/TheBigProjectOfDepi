@@ -80,6 +80,7 @@ namespace CarRental.App.Services
                 expires: DateTime.Now.AddHours(2),
                 claims: claims,
                 signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
+
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);

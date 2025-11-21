@@ -54,18 +54,18 @@ namespace CarRental.Infa.Data
 
 
 
-            // ===================== SEED ROLES & ADMIN =====================
+           
             var adminRoleId = Guid.NewGuid().ToString();
             var customerRoleId = Guid.NewGuid().ToString();
             var adminUserId = Guid.NewGuid().ToString();
 
-            // Roles
+           
             modelBuilder.Entity<IdentityRole>().HasData(
                 new IdentityRole { Id = adminRoleId, Name = "Admin", NormalizedName = "ADMIN" },
                 new IdentityRole { Id = customerRoleId, Name = "Customer", NormalizedName = "CUSTOMER" }
             );
 
-            // Admin user
+           
             var hasher = new PasswordHasher<ApplicationUser>();
             var adminUser = new ApplicationUser
             {
@@ -82,7 +82,7 @@ namespace CarRental.Infa.Data
 
             modelBuilder.Entity<ApplicationUser>().HasData(adminUser);
 
-            // Link admin user to Admin role
+           
             modelBuilder.Entity<IdentityUserRole<string>>().HasData(
                 new IdentityUserRole<string>
                 {
