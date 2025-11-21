@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ namespace CarRental.App.DTOs
         public int Year { get; set; }
         public decimal PricePerDay { get; set; }
         public string Status { get; set; } = "Available";
+        public string? ImageUrl { get; set; }
     }
     public class CreateCarDto
     {
@@ -21,6 +23,7 @@ namespace CarRental.App.DTOs
         public string Model { get; set; } = string.Empty;
         public int Year { get; set; }
         public decimal PricePerDay { get; set; }
+        public IFormFile? Image { get; set; }
     }
     public class UpdateCarDto
     {
@@ -30,6 +33,9 @@ namespace CarRental.App.DTOs
         public int Year { get; set; }
         public decimal PricePerDay { get; set; }
         public string Status { get; set; }
+        public IFormFile? Image { get; set; }
+        public string? OldImageUrl { get; set; }
+
     }
     public class DeleteDto
     {

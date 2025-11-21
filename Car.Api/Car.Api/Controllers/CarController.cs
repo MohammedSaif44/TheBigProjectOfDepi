@@ -36,7 +36,7 @@ namespace CarRental.Api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] CreateCarDto dto)
+        public async Task<IActionResult> Add([FromForm] CreateCarDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -47,7 +47,7 @@ namespace CarRental.Api.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] UpdateCarDto dto)
+        public async Task<IActionResult> Update([FromForm] UpdateCarDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

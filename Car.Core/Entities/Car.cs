@@ -15,6 +15,7 @@ namespace CarRental.Core.Entities
         public decimal PricePerDay { get; set; }
         public string Status { get; set; } = "Available";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string? ImageUrl { get; set; }
 
         public ICollection<Reservation>? Reservations { get; set; }
     }

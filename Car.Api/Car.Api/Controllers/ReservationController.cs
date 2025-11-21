@@ -38,16 +38,21 @@ namespace CarRental.Api.Controllers
             return Ok(new { Message = "Reservation created successfully." });
         }
 
-        
+
         [Authorize(Roles = "Customer")]
         [HttpGet("my")]
         public async Task<IActionResult> GetMy()
         {
-            var user = await _userManager.GetUserAsync(User);
-            return Ok(await _service.GetByUserAsync(user.Id));
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+                return Unauthorized("User not found.");
+
+            return Ok(await _service.GetByUserAsync(userId));
+
         }
 
-        
+
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()

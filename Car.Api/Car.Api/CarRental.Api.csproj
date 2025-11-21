@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\Car.Infa\CarRental.Infa.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\cars\" />
+  </ItemGroup>
+
 </Project>

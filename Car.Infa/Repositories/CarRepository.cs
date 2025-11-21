@@ -46,6 +46,7 @@ namespace CarRental.Infa.Repositories
             existing.Year = car.Year;
             existing.PricePerDay = car.PricePerDay;
             existing.Status = car.Status;
+            existing.ImageUrl = car.ImageUrl;
 
             _context.Cars.Update(existing);
             await _context.SaveChangesAsync();

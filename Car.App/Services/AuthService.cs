@@ -70,6 +70,8 @@ namespace CarRental.App.Services
 
             foreach (var role in roles)
                 claims.Add(new Claim(ClaimTypes.Role, role));
+                
+
 
             var jwt = _config.GetSection("Jwt");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt["Key"]));
