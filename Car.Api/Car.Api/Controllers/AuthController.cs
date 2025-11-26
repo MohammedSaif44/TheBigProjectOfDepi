@@ -37,25 +37,6 @@ namespace Car.API.Controllers
             return Ok(result);
         }
 
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("create-role")]
-        public async Task<IActionResult> CreateRole([FromBody] string roleName)
-        {
-            var result = await _authService.CreateRoleAsync(roleName);
-            return Ok(result);
-        }
-
-
-        [Authorize(Roles = "Admin")]
-        [HttpPost("assign-role")]
-        public async Task<IActionResult> AssignRole([FromBody] AssignRoleDto dto)
-        {
-            var result = await _authService.AssignRoleAsync(dto);
-            return Ok(result);
-        }
-
-
         [Authorize(Roles = "Admin")]
         [HttpGet("users")]
         public async Task<IActionResult> GetAllUsers()

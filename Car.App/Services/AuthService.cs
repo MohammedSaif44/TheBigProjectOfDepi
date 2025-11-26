@@ -26,6 +26,9 @@ namespace CarRental.App.Services
 
         public async Task<object> RegisterAsync(RegisterDto model)
         {
+            var existing = await _repo.GetUserByEmailAsync(model.Email);
+            if (existing != null)
+                return new { Success = false, Message = "Email already exists" };
             var user = new ApplicationUser
             {
                 FullName = model.FullName,
@@ -86,24 +89,6 @@ namespace CarRental.App.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        public async Task<string> CreateRoleAsync(string roleName)
-        {
-            if (await _repo.RoleExistsAsync(roleName))
-                return "Role already exists";
-
-            var result = await _repo.CreateRoleAsync(roleName);
-            return result.Succeeded ? "Role created successfully" : "Failed to create role";
-        }
-
-        public async Task<string> AssignRoleAsync(AssignRoleDto model)
-        {
-            var user = await _repo.GetUserByEmailAsync(model.Email);
-            if (user == null) return "User not found";
-
-            var result = await _repo.AddToRoleAsync(user, model.RoleName);
-            return result.Succeeded ? $"Role {model.RoleName} assigned to {model.Email}" : "Failed to assign role";
         }
 
         public async Task<IEnumerable<object>> GetAllUsersAsync()
