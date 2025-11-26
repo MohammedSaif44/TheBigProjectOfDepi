@@ -13,10 +13,12 @@ namespace CarRental.App.Services
     public class CarService
     {
         private readonly ICarRepository _repository;
+        private readonly IHttpContextAccessor _http;
 
-        public CarService(ICarRepository repository)
+        public CarService(ICarRepository repository, IHttpContextAccessor http)
         {
             _repository = repository;
+            _http = http;
         }
 
         public async Task<IEnumerable<CarDto>> GetAllAsync()
@@ -50,7 +52,7 @@ namespace CarRental.App.Services
                 ImageUrl = car.ImageUrl
             };
         }
-        private async Task<string> SaveImageAsync(IFormFile image)
+        private async Task<string> SaveImageAsync(IFormFile image , HttpContext context)
         {
             var folder = Path.Combine("wwwroot", "images", "cars");
             Directory.CreateDirectory(folder);
@@ -63,7 +65,10 @@ namespace CarRental.App.Services
                 await image.CopyToAsync(stream);
             }
 
-            return $"/images/cars/{fileName}";
+            string baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
+            string url = $"{baseUrl}/images/cars/{fileName}";
+
+            return url;
         }
         private void DeleteImage(string? imageUrl)
         {

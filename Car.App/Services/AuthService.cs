@@ -46,7 +46,11 @@ namespace CarRental.App.Services
 
             await _repo.AddToRoleAsync(user, "Customer");
 
-            return new { Success = true, Message = "User registered successfully" };
+            var roles = await _repo.GetUserRolesAsync(user);
+            var token = GenerateJwtToken(user, roles);
+
+
+            return new { Success = true, Message = "User registered successfully" ,Token=token};
         }
 
         public async Task<object> LoginAsync(LoginDto model)
