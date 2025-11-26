@@ -87,7 +87,7 @@ namespace CarRental.App.Services
             string? imageUrl = null;
 
             if (dto.Image != null)
-                imageUrl = await SaveImageAsync(dto.Image);
+                imageUrl = await SaveImageAsync(dto.Image, _http.HttpContext);
 
             var car = new Car
             {
@@ -113,7 +113,7 @@ namespace CarRental.App.Services
             if (dto.Image != null)
             {
                 DeleteImage(existing.ImageUrl);
-                existing.ImageUrl = await SaveImageAsync(dto.Image);
+                existing.ImageUrl = await SaveImageAsync(dto.Image , _http.HttpContext);
             }
 
             existing.Make = dto.Make;
