@@ -65,10 +65,7 @@ namespace CarRental.App.Services
                 await image.CopyToAsync(stream);
             }
 
-            string baseUrl = $"{context.Request.Scheme}://{context.Request.Host}";
-            string url = $"{baseUrl}/images/cars/{fileName}";
-
-            return url;
+            return $"{context.Request.Scheme}://{context.Request.Host}/images/cars/{fileName}";
         }
         private void DeleteImage(string? imageUrl)
         {
