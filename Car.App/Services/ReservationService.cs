@@ -25,8 +25,8 @@ namespace CarRental.App.Services
             _userManager = userManager;
         }
 
-       
-        public async Task AddAsync(string userId, CreateReservationDto dto)
+
+        public async Task<int> AddAsync(string userId, CreateReservationDto dto)
         {
             var car = await _carRepo.GetByIdAsync(dto.CarId);
             if (car == null || car.Status != "Available")
@@ -65,8 +65,9 @@ namespace CarRental.App.Services
                 }
             );
 
-
+            return reservation.Id;  // ← أهم حاجة
         }
+
 
 
         public async Task<IEnumerable<ReservationDto>> GetByUserAsync(string userId)

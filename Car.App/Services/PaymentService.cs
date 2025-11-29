@@ -49,8 +49,8 @@ namespace CarRental.App.Services
             {
                 Mode = "payment",
                 CustomerEmail = userEmail,
-                SuccessUrl = dto.SuccessUrl ?? "http://localhost:5500/payment-success.html",
-                CancelUrl = dto.CancelUrl ?? "http://localhost:5500/payment-failed.html",
+                SuccessUrl = dto.SuccessUrl ?? "http://127.0.0.1:5500/pages/payments/payment-success.html?session_id={CHECKOUT_SESSION_ID}",
+                CancelUrl = dto.CancelUrl ?? "http://127.0.0.1:5500/pages/payments/payment-failed.html",
                 PaymentMethodTypes = new List<string> { "card" },
                 LineItems = new List<SessionLineItemOptions>
             {
@@ -149,5 +149,24 @@ namespace CarRental.App.Services
                 PaymentDate = p.PaymentDate
             });
         }
+
+
+        public async Task<PaymentDto?> GetBySessionIdAsync(string sessionId)
+        {
+            var payment = await _paymentRepo.GetBySessionIdAsync(sessionId);
+            if (payment == null) return null;
+
+            return new PaymentDto
+            {
+                Id = payment.Id,
+                ReservationId = payment.ReservationId,
+                Amount = payment.Amount,
+                Status = payment.Status,
+                Method = payment.Method,
+                SessionId = payment.SessionId,
+                PaymentDate = payment.PaymentDate
+            };
+        }
+
     }
 }

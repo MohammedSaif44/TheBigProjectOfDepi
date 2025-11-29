@@ -33,9 +33,13 @@ namespace CarRental.Api.Controllers
             if (userId == null)
                 return Unauthorized("User ID not found in token.");
 
-            await _service.AddAsync(userId, dto);
+            var reservationId = await _service.AddAsync(userId, dto);
 
-            return Ok(new { Message = "Reservation created successfully." });
+            return Ok(new
+            {
+                Message = "Reservation created successfully.",
+                ReservationId = reservationId
+            });
         }
 
 
@@ -85,7 +89,7 @@ namespace CarRental.Api.Controllers
             if (!ok)
                 return NotFound(new { Message = "Reservation not found" });
 
-            return Ok(new { Message = "Reservation deleted" });
+            return Ok(new { success = true, Message = "Reservation deleted" });
         }
     }
 

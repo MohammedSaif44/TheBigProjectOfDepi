@@ -33,6 +33,19 @@ namespace CarRental.Api.Controllers
             return Ok(result);
         }
 
+        [Authorize]
+        [HttpGet("session/{sessionId}")]
+        public async Task<IActionResult> GetBySessionId(string sessionId)
+        {
+            var result = await _paymentService.GetBySessionIdAsync(sessionId);
+
+            if (result == null)
+                return NotFound(new { message = "Payment session not found." });
+
+            return Ok(result);
+        }
+
+
         [Authorize(Roles = "Admin")]
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
@@ -44,6 +57,7 @@ namespace CarRental.Api.Controllers
         [HttpPost("webhook")]
         public async Task<IActionResult> Webhook()
         {
+            Request.EnableBuffering();
             var json = await new StreamReader(Request.Body).ReadToEndAsync();
             var stripeSignature = Request.Headers["Stripe-Signature"];
             var webhookSecret = _config["Stripe:WebhookSecret"];
@@ -67,6 +81,7 @@ namespace CarRental.Api.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("WEBHOOK ERROR: " + ex.ToString());
                 return BadRequest(ex.Message);
             }
         }

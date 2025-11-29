@@ -42,5 +42,7 @@ namespace CarRental.Infa.Repositories
             => await _userManager.AddToRoleAsync(user, roleName);
 
         public IQueryable<ApplicationUser> GetAllUsers() => _userManager.Users;
+
+
     }
 }

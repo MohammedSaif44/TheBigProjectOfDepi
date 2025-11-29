@@ -18,5 +18,6 @@ namespace CarRental.App.Interfaces
         Task<IdentityResult> CreateRoleAsync(string roleName);
         Task<IdentityResult> AddToRoleAsync(ApplicationUser user, string roleName);
         IQueryable<ApplicationUser> GetAllUsers();
+
     }
 }
