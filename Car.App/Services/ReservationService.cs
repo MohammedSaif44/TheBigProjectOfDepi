@@ -149,6 +149,13 @@ namespace CarRental.App.Services
             if (res.UserId != userId)
                 throw new Exception("Not allowed.");
 
+            var car = await _carRepo.GetByIdAsync(res.CarId);
+            if (car != null)
+            {
+                car.Status = "Available";
+                await _carRepo.UpdateAsync(car);
+            }
+
             await _reservationRepo.DeleteAsync(id);
             var user = await _userManager.FindByIdAsync(userId);
 
