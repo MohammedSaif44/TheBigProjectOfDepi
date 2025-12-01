@@ -18,14 +18,16 @@ namespace CarRental.App.Services
     {
         private readonly IPaymentRepository _paymentRepo;
         private readonly IReservationRepository _reservationRepo;
+        private readonly ICarRepository _carRepo;
         private readonly IConfiguration _config;
         private readonly INotificationService _notificationService;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public PaymentService(IPaymentRepository paymentRepo, IReservationRepository reservationRepo, IConfiguration config, INotificationService notificationService, UserManager<ApplicationUser> userManager)
+        public PaymentService(IPaymentRepository paymentRepo, IReservationRepository reservationRepo,ICarRepository carRepository, IConfiguration config, INotificationService notificationService, UserManager<ApplicationUser> userManager)
         {
             _paymentRepo = paymentRepo;
             _reservationRepo = reservationRepo;
+            _carRepo = carRepository;
             _config = config;
             _userManager = userManager;
 
@@ -118,6 +120,13 @@ namespace CarRental.App.Services
             {
                 reservation.Status = "Confirmed";
                 await _reservationRepo.UpdateAsync(reservation);
+            }
+
+            var car = await _carRepo.GetByIdAsync(reservation.CarId);
+            if (car != null)
+            {
+                car.Status = "Rented";  
+                await _carRepo.UpdateAsync(car);
             }
             var user = await _userManager.FindByIdAsync(reservation.UserId);
             await _notificationService.NotifyAsync(
