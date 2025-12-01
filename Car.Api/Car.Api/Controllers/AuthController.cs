@@ -26,16 +26,35 @@ namespace Car.API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _authService.RegisterAsync(dto);
+
+            if (!(bool)result.GetType().GetProperty("Success")!.GetValue(result)!)
+                return BadRequest(result);
+
             return Ok(result);
         }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             var result = await _authService.LoginAsync(dto);
+
+            
+            bool success = (bool)result.GetType().GetProperty("Success")!.GetValue(result)!;
+
+            if (!success)
+                return BadRequest(result);
+
             return Ok(result);
         }
+
 
         [Authorize(Roles = "Admin")]
         [HttpGet("users")]

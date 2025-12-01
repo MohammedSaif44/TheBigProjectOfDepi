@@ -39,7 +39,10 @@ namespace CarRental.App.Services
 
             var result = await _repo.RegisterAsync(user, model.Password);
             if (!result.Succeeded)
-                return new { Success = false, Errors = result.Errors };
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return new { Success = false, Errors = errors };
+            }
 
             if (!await _repo.RoleExistsAsync("Customer"))
                 await _repo.CreateRoleAsync("Customer");
@@ -56,7 +59,13 @@ namespace CarRental.App.Services
         public async Task<object> LoginAsync(LoginDto model)
         {
             var user = await _repo.GetUserByEmailAsync(model.Email);
-            if (user == null || !await _repo.CheckPasswordAsync(user, model.Password))
+
+            if (user == null)
+                return new { Success = false, Message = "Invalid email or password" };
+
+            var check = await _repo.CheckPasswordAsync(user, model.Password);
+
+            if (!check)
                 return new { Success = false, Message = "Invalid email or password" };
 
             var roles = await _repo.GetUserRolesAsync(user);
@@ -64,6 +73,7 @@ namespace CarRental.App.Services
 
             return new { Success = true, Token = token };
         }
+
 
         private string GenerateJwtToken(ApplicationUser user, IList<string> roles)
         {
