@@ -77,8 +77,14 @@ namespace CarRental.App.Services
             return list.Select(r => new ReservationDto
             {
                 Id = r.Id,
+
+                UserFullName = r.User.FullName,
                 UserEmail = r.User.Email,
+
+                CarMake = r.Car.Make,
                 CarModel = r.Car.Model,
+               
+
                 TotalPrice = r.TotalPrice,
                 Status = r.Status,
                 StartDate = r.StartDate,
@@ -94,8 +100,14 @@ namespace CarRental.App.Services
             return list.Select(r => new ReservationDto
             {
                 Id = r.Id,
+
+                UserFullName = r.User.FullName,
                 UserEmail = r.User.Email,
+
+                CarMake = r.Car.Make,
                 CarModel = r.Car.Model,
+               
+
                 TotalPrice = r.TotalPrice,
                 Status = r.Status,
                 StartDate = r.StartDate,

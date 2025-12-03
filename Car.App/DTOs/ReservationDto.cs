@@ -10,8 +10,17 @@ namespace CarRental.App.DTOs
     public class ReservationDto
     {
         public int Id { get; set; }
+
+        // User
+        public string UserFullName { get; set; }
         public string UserEmail { get; set; }
+
+        // Car
+        public string CarMake { get; set; }
         public string CarModel { get; set; }
+       
+
+        // Reservation
         public decimal TotalPrice { get; set; }
         public string Status { get; set; }
         public DateTime StartDate { get; set; }
@@ -19,7 +28,8 @@ namespace CarRental.App.DTOs
     }
 
 
-public class CreateReservationDto
+
+    public class CreateReservationDto
     {
         [Required(ErrorMessage = "CarId is required")]
         [Range(1, int.MaxValue, ErrorMessage = "CarId must be greater than 0")]
