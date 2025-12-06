@@ -115,30 +115,37 @@ namespace CarRental.App.Services
             });
         }
 
-        
+
         public async Task<bool> UpdateAsync(UpdateReservationDto dto, string userId)
         {
             var reservation = await _reservationRepo.GetByIdAsync(dto.Id);
             if (reservation == null)
                 return false;
 
-            
-            if (reservation.UserId != userId)
+            // Get caller user
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+            bool isAdmin = roles.Contains("Admin");
+
+            // Allow: reservation owner OR admin
+            if (reservation.UserId != userId && !isAdmin)
                 throw new Exception("Not allowed.");
 
+            // Update reservation
             var days = (dto.EndDate - dto.StartDate).Days;
             reservation.StartDate = dto.StartDate;
             reservation.EndDate = dto.EndDate;
             reservation.Status = dto.Status;
             reservation.TotalPrice = reservation.Car.PricePerDay * days;
 
-             await _reservationRepo.UpdateAsync(reservation);
+            await _reservationRepo.UpdateAsync(reservation);
 
-            var user = await _userManager.FindByIdAsync(reservation.UserId);
+            // Send notification to the reservation owner
+            var reservationOwner = await _userManager.FindByIdAsync(reservation.UserId);
 
             await _notificationService.NotifyAsync(
                 reservation.UserId,
-                user?.Email ?? "",
+                reservationOwner?.Email ?? "",
                 NotificationType.ReservationUpdated,
                 "Reservation Updated",
                 $"Your reservation #{reservation.Id} has been updated.",
@@ -153,14 +160,22 @@ namespace CarRental.App.Services
         }
 
 
+
         public async Task<bool> DeleteAsync(int id, string userId)
         {
             var res = await _reservationRepo.GetByIdAsync(id);
             if (res == null) return false;
 
-            if (res.UserId != userId)
+            // Get current user (the caller)
+            var currentUser = await _userManager.FindByIdAsync(userId);
+            var roles = await _userManager.GetRolesAsync(currentUser);
+            bool isAdmin = roles.Contains("Admin");
+
+            // Allow admin OR reservation owner
+            if (res.UserId != userId && !isAdmin)
                 throw new Exception("Not allowed.");
 
+            // Free the car again
             var car = await _carRepo.GetByIdAsync(res.CarId);
             if (car != null)
             {
@@ -168,12 +183,15 @@ namespace CarRental.App.Services
                 await _carRepo.UpdateAsync(car);
             }
 
+            // Delete reservation
             await _reservationRepo.DeleteAsync(id);
-            var user = await _userManager.FindByIdAsync(userId);
+
+            // Notification should go to the RESERVATION OWNER
+            var reservationOwner = await _userManager.FindByIdAsync(res.UserId);
 
             await _notificationService.NotifyAsync(
-                userId,
-                user?.Email ?? "",
+                res.UserId, // send to owner
+                reservationOwner?.Email ?? "",
                 NotificationType.ReservationCancelled,
                 "Reservation Cancelled",
                 $"Your reservation #{res.Id} has been cancelled.",
@@ -185,7 +203,8 @@ namespace CarRental.App.Services
 
             return true;
         }
-       
+
+
 
     }
 

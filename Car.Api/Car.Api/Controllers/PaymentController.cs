@@ -21,7 +21,7 @@ namespace CarRental.Api.Controllers
             _config = config;
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer ,Admin")]
         [HttpPost("create-session")]
         public async Task<IActionResult> CreateSession(CreatePaymentDto dto)
         {

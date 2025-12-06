@@ -24,7 +24,7 @@ namespace CarRental.Api.Controllers
         }
 
         
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer ,Admin")]
         [HttpPost("create")]
         public async Task<IActionResult> Create(CreateReservationDto dto)
         {
@@ -65,7 +65,7 @@ namespace CarRental.Api.Controllers
         }
 
         
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer ,Admin")]
         [HttpPut("update")]
         public async Task<IActionResult> Update(UpdateReservationDto dto)
         {
@@ -79,7 +79,7 @@ namespace CarRental.Api.Controllers
         }
 
        
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer ,Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
