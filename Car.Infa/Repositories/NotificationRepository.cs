@@ -54,5 +54,18 @@ namespace CarRental.Infa.Repositories
 
             await _ctx.SaveChangesAsync();
         }
+        public async Task<bool> DeleteNotificationAsync(int id, string userId)
+        {
+            var notif = await _ctx.Notifications
+                .FirstOrDefaultAsync(n => n.Id == id && n.UserId == userId);
+
+            if (notif == null)
+                return false;
+
+            _ctx.Notifications.Remove(notif);
+            await _ctx.SaveChangesAsync();
+            return true;
+        }
+
     }
 }

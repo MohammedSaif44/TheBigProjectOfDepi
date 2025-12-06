@@ -13,5 +13,7 @@ namespace CarRental.App.Interfaces
         Task<IEnumerable<Notification>> GetUserNotificationsAsync(string userId);
         Task MarkAsReadAsync(int notificationId);
         Task MarkAllAsReadAsync(string userId);
+        Task<bool> DeleteNotificationAsync(int id, string userId);
+
     }
 }

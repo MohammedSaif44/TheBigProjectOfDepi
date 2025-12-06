@@ -92,5 +92,21 @@ namespace CarRental.Api.Controllers
             return Ok(new { message = "Preferences updated successfully" });
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteNotification(int id)
+        {
+            var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized("User ID not found in token.");
+
+            var deleted = await _notificationRepo.DeleteNotificationAsync(id, userId);
+
+            if (!deleted)
+                return NotFound(new { message = "Notification not found or you do not have permission to delete it" });
+
+            return Ok(new { message = "Notification deleted successfully" });
+        }
+
     }
 }
